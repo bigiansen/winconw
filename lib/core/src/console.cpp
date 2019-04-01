@@ -2,16 +2,21 @@
 
 namespace wcw
 {
-    void console::initialize(rect win_rect)
+    void console::initialize(rect win_rect, const std::wstring& fontName)
     {
         _proc_handle = GetCurrentProcess();        
         _con_handle = GetStdHandle(STD_OUTPUT_HANDLE);
         set_console_size(win_rect);
+        set_console_font(fontName);
+    }
+
+    void console::set_console_font(const std::wstring& fontName)
+    {
         CONSOLE_FONT_INFOEX cfont_info;
         cfont_info.cbSize = sizeof(CONSOLE_FONT_INFOEX);
         cfont_info.dwFontSize = COORD{16,0};
         cfont_info.FontWeight = FW_NORMAL;
-        wcscpy_s(cfont_info.FaceName, 12, L"FixedSys");
+        wcscpy_s(cfont_info.FaceName, 12, fontName.c_str());
         SetCurrentConsoleFontEx(_con_handle, TRUE, &cfont_info);
     }
 
