@@ -17,6 +17,7 @@ namespace wcw
 
         console* _console = nullptr;
         widget* _parent = nullptr;
+        std::vector<std::unique_ptr<widget>> _children;
 
         color _current_fcol = color::WHITE;
         color _current_bcol = color::BLACK;
@@ -26,6 +27,8 @@ namespace wcw
     public:
         widget() = delete;
         widget(console* con_ptr, rect bounds_rect, widget* parent = nullptr);
+
+        void add_child(std::unique_ptr<widget>&& w);
 
         rect bounding_rect() const noexcept;
 
@@ -38,6 +41,15 @@ namespace wcw
         void set_current_back_color(color bcol);
 
         bool is_root() const noexcept;
+
+        void inherit_background();
+        void inherit_foreground();
+        void inherit_colors();
+
+        void update_children();
+        void draw_children();
+
+        void get_absolute_position(int& xres, int& yres);
 
         void write_at(const std::string& text, int x, int y);
         void clear_row(int row_index);
