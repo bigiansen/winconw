@@ -27,6 +27,7 @@ namespace wcw
         void set_size(int w, int h) noexcept;
         void set_bounds(rect bounds_rect) noexcept;
 
-        void draw();
+        virtual void draw();
+        virtual void update() = 0;
     };
 }

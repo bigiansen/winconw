@@ -1,6 +1,7 @@
 #pragma once
 
 #include <winconw/color.hpp>
+#include <vector>
 
 namespace wcw
 {
@@ -16,11 +17,17 @@ namespace wcw
             , foreground_color(fcol)
         { }
 
-        constexpr operator CHAR_INFO()
+        operator CHAR_INFO()
         {
             CHAR_INFO result = {};
             result.Char.AsciiChar = character;
             result.Attributes = get_char_info_attr(foreground_color, background_color);
+            return result;
         }
+
+        static std::vector<con_char> text2vec(
+            const std::string& text, 
+            color fcol, 
+            color bcol);
     };
 }

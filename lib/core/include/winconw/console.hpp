@@ -5,9 +5,11 @@
 #include <Windows.h>
 #include <conio.h>
 #include <stdexcept>
+#include <vector>
 
 #include <winconw/color.hpp>
 #include <winconw/rect.hpp>
+#include <winconw/con_char.hpp>
 
 namespace wcw
 {
@@ -33,6 +35,8 @@ namespace wcw
 
         void write_at(char ch, int x, int y);
         void write_at(char16_t ch, int x, int y);
+
+        void output(const std::vector<con_char>& chars);
 
         void clear();
     private:

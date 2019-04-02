@@ -53,7 +53,10 @@ namespace wcw
     
     void console::set_cursor_pos(int x, int y)
     {
-        SetCursorPos(x, y);
+        COORD pos;
+        pos.X = static_cast<SHORT>(x);
+        pos.Y = static_cast<SHORT>(y);
+        SetConsoleCursorPosition(_con_handle, pos);
     }
 
     void console::write(const std::string& text)
@@ -84,6 +87,35 @@ namespace wcw
     {
         set_cursor_pos(x, y);
         write(std::u16string(1, ch));
+    }
+
+    void console::output(const std::vector<con_char>& chars)
+    {
+        std::vector<CHAR_INFO> chinfov;
+        chinfov.resize(chars.size());
+        std::transform(chars.begin(), chars.end(), chinfov.begin(), 
+            [](con_char cc) {
+                return static_cast<CHAR_INFO>(cc);
+            }
+        );
+
+        COORD pos = { 0, 0 };
+
+        COORD buff_size = {};
+        buff_size.X = static_cast<SHORT>(chars.size());
+        buff_size.Y = 1;
+
+        COORD cursor_pos;
+        GetConsoleScreenBufferInfo(_con_handle, &_con_info);
+        cursor_pos = _con_info.dwCursorPosition;
+
+        SMALL_RECT write_rect;
+        write_rect.Left = cursor_pos.X;
+        write_rect.Top = cursor_pos.Y;
+        write_rect.Right = static_cast<SHORT>((cursor_pos.X + chars.size()));
+        write_rect.Bottom = cursor_pos.Y + 1;
+
+        WriteConsoleOutputA(_con_handle, chinfov.data(), buff_size, pos, &write_rect);
     }
 
     void console::clear()
