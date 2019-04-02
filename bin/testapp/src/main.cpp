@@ -11,7 +11,10 @@ class time_widget : public wcw::widget
 public:
     time_widget(wcw::console* con_ptr, wcw::rect bounds_rect)
         : widget(con_ptr, bounds_rect)
-    { }
+    { 
+        _current_bcol = wcw::color::YELLOW;
+        _current_fcol = wcw::color::BLACK;
+    }
 
     void update() override
     {
@@ -20,10 +23,7 @@ public:
         auto time = std::put_time(&tm,"%d-%m-%Y %H:%M:%S");
         std::stringstream sstr;
         sstr << time;
-        std::vector<wcw::con_char> row = 
-            wcw::con_char::text2vec(sstr.str(), wcw::color::BLACK, wcw::color::YELLOW);
-        _char_rows.clear();
-        _char_rows.push_back(row);
+        write_at(sstr.str(), 0, 0);
     }
 };
 

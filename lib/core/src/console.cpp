@@ -14,9 +14,9 @@ namespace wcw
     {
         CONSOLE_FONT_INFOEX cfont_info;
         cfont_info.cbSize = sizeof(CONSOLE_FONT_INFOEX);
-        cfont_info.dwFontSize = COORD{16,0};
+        cfont_info.dwFontSize = COORD{16, 0};
         cfont_info.FontWeight = FW_NORMAL;
-        wcscpy_s(cfont_info.FaceName, 12, fontName.c_str());
+        wcscpy_s(cfont_info.FaceName, 16, fontName.c_str());
         SetCurrentConsoleFontEx(_con_handle, TRUE, &cfont_info);
     }
 
@@ -89,12 +89,12 @@ namespace wcw
         write(std::u16string(1, ch));
     }
 
-    void console::output(const std::vector<con_char>& chars)
+    void console::output(const std::vector<console_char>& chars)
     {
         std::vector<CHAR_INFO> chinfov;
         chinfov.resize(chars.size());
         std::transform(chars.begin(), chars.end(), chinfov.begin(), 
-            [](con_char cc) {
+            [](console_char cc) {
                 return static_cast<CHAR_INFO>(cc);
             }
         );

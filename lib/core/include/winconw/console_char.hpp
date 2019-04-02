@@ -5,13 +5,19 @@
 
 namespace wcw
 {
-    struct con_char
+    struct console_char
     {
         char character;
         color foreground_color;
         color background_color;
 
-        constexpr con_char(char ch, color fcol, color bcol)
+        constexpr console_char()
+            : character('\0')
+            , background_color(color::BLACK)
+            , foreground_color(color::WHITE)
+        { }
+
+        constexpr console_char(char ch, color fcol, color bcol)
             : character(ch)
             , background_color(bcol)
             , foreground_color(fcol)
@@ -25,7 +31,7 @@ namespace wcw
             return result;
         }
 
-        static std::vector<con_char> text2vec(
+        static std::vector<console_char> text2vec(
             const std::string& text, 
             color fcol, 
             color bcol);

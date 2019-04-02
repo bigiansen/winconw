@@ -1,12 +1,12 @@
 #pragma once
 
 #include <vector>
-#include <winconw/con_char.hpp>
+#include <winconw/console_char.hpp>
 
 namespace wcw
 {
     struct widget_content
     {
-        std::vector<std::vector<con_char>> char_rows;
+        std::vector<std::vector<console_char>> char_rows;
     };
 }
