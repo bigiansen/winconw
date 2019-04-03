@@ -4,10 +4,12 @@ namespace wcw
 {
     void console::initialize(rect win_rect, const std::wstring& fontName)
     {
-        _proc_handle = GetCurrentProcess();        
+        _proc_handle = GetCurrentProcess();
         _con_handle = GetStdHandle(STD_OUTPUT_HANDLE);
         set_console_size(win_rect);
         set_console_font(fontName);
+        hide_cursor();
+        _root_widget = std::make_unique<container_widget>(this, win_rect, nullptr);
     }
 
     void console::set_console_font(const std::wstring& fontName)
@@ -150,5 +152,13 @@ namespace wcw
         result.Attributes = get_char_info_attr(_text_color, _back_color);
         result.Char.UnicodeChar = uch;
         return result;
-    }    
+    }   
+
+    void console::hide_cursor()
+    {
+        CONSOLE_CURSOR_INFO cursor_info;
+        cursor_info.dwSize = 100;
+        cursor_info.bVisible = FALSE;
+        SetConsoleCursorInfo(_con_handle, &cursor_info);
+    }
 }
