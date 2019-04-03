@@ -120,6 +120,21 @@ namespace wcw
         WriteConsoleOutputA(_con_handle, chinfov.data(), buff_size, pos, &write_rect);
     }
 
+    widget* console::root_widget()
+    {
+        return _root_widget.get();
+    }
+
+    void console::update()
+    {
+        _root_widget->update();
+    }
+
+    void console::draw()
+    {
+        _root_widget->update();
+    }
+
     void console::clear()
     {
         WORD attr = get_char_info_attr(_text_color, _back_color);

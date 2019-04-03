@@ -46,15 +46,16 @@ namespace wcw
         void inherit_foreground();
         void inherit_colors();
 
-        void update_children();
-        void draw_children();
+        virtual void get_absolute_position(int& xres, int& yres);
 
-        void get_absolute_position(int& xres, int& yres);
-
-        void write_at(const std::string& text, int x, int y);
+        virtual void write_at(const std::string& text, int x, int y);
         void clear_row(int row_index);
 
         virtual void draw();
         virtual void update() = 0;
+
+    protected:
+        virtual void update_children();
+        virtual void draw_children();
     };
 }
