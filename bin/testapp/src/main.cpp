@@ -11,9 +11,9 @@
 int main()
 {
     wcw::console con;
-    con.initialize(wcw::rect(0, 0, 80, 40));
-    wcw::time_widget* tw = con.add_widget<wcw::time_widget>(wcw::rect(0, 0, 80, 1));
-    wcw::lineview_widget* lw = con.add_widget<wcw::lineview_widget>(wcw::rect(0, 1, 80, 39));
+    con.initialize(wcw::rect(0, 0, 80, 40));    
+    wcw::lineview_widget* lw = con.add_widget<wcw::lineview_widget>(wcw::rect(0, 0, 80, 40));
+    wcw::time_widget* tw = con.add_widget<wcw::time_widget>(wcw::rect(0, 20, 40, 2));
     lw->set_current_back_color(wcw::color::GRAY);
     lw->set_current_text_color(wcw::color::WHITE);
     lw->set_line(0, "HELLO");

@@ -188,11 +188,10 @@ namespace wcw
         {
             _console->set_cursor_pos(abs_offset_x, abs_offset_y + i);
             std::vector<console_char>& row = _char_rows[i];
-            if(row.size() > static_cast<size_t>(_transform.x))
+            if(row.size() > static_cast<size_t>(_transform.w))
             {
                 std::vector<console_char> aux_clamped;
-                aux_clamped.reserve(_transform.x);
-                std::copy(row.begin(), row.end(), std::back_inserter(aux_clamped));
+                std::copy(row.begin(), row.begin() + _transform.w, std::back_inserter(aux_clamped));
                 _console->output(aux_clamped);
             }
             else
