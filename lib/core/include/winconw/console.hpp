@@ -49,6 +49,7 @@ namespace wcw
         void clear();
         
     private:
+        void disable_window_controls();
         void hide_cursor();
         void set_console_size(rect win_rect);
         void set_console_font(const std::wstring& fontName);

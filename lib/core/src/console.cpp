@@ -9,7 +9,24 @@ namespace wcw
         set_console_size(win_rect);
         set_console_font(fontName);
         hide_cursor();
+        disable_window_controls();
         _root_widget = std::make_unique<container_widget>(this, win_rect, nullptr);
+    }
+
+    void console::disable_window_controls()
+    {
+        HWND con_window = GetConsoleWindow();
+        
+        DWORD style = GetWindowLong(con_window, GWL_STYLE);
+        style &= ~WS_MAXIMIZEBOX;
+        style &= ~WS_SIZEBOX;
+        style &= ~WS_HSCROLL;
+        style &= ~WS_VSCROLL;
+        SetWindowLong(con_window, GWL_STYLE, style);
+
+        auto sys_menu = GetSystemMenu(con_window, FALSE);
+        DeleteMenu(sys_menu, SC_SIZE, NULL);
+        DeleteMenu(sys_menu, SC_MAXIMIZE, NULL);
     }
 
     void console::set_console_font(const std::wstring& fontName)
@@ -111,10 +128,16 @@ namespace wcw
         GetConsoleScreenBufferInfo(_con_handle, &_con_info);
         cursor_pos = _con_info.dwCursorPosition;
 
+        // prevent overflow x
+        if(cursor_pos.X + chinfov.size() > _con_info.dwSize.X)
+        {
+            chinfov.resize(_con_info.dwSize.X - cursor_pos.X - 1);
+        }
+
         SMALL_RECT write_rect;
         write_rect.Left = cursor_pos.X;
         write_rect.Top = cursor_pos.Y;
-        write_rect.Right = static_cast<SHORT>((cursor_pos.X + chars.size()));
+        write_rect.Right = static_cast<SHORT>((cursor_pos.X + chinfov.size()));
         write_rect.Bottom = cursor_pos.Y + 1;
 
         WriteConsoleOutputA(_con_handle, chinfov.data(), buff_size, pos, &write_rect);
@@ -132,7 +155,7 @@ namespace wcw
 
     void console::draw()
     {
-        _root_widget->update();
+        _root_widget->draw();
     }
 
     void console::clear()
