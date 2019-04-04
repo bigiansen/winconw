@@ -12,5 +12,6 @@ namespace wcw
         { }
 
         virtual void update() override;
+        virtual void draw() override;
     };
 }

@@ -8,32 +8,23 @@
 #include <thread>
 #include <chrono>
 
-class container_widget : public wcw::widget
-{
-public:
-    container_widget(wcw::console* con_ptr, wcw::rect bounds_rect)
-        : widget(con_ptr, bounds_rect)
-    { }
-
-    void update() override
-    { 
-        update_children();
-    }
-};
-
 int main()
 {
     wcw::console con;
-    con.initialize(wcw::rect(0, 0, 40, 20));
-    wcw::rect bounds(1, 1, 16, 1);
-    container_widget cont(&con, wcw::rect(0, 0, 0, 0));
-    cont.add_child(std::make_unique<wcw::time_widget>(&con, bounds));
+    con.initialize(wcw::rect(0, 0, 80, 40));
+    wcw::time_widget* tw = con.add_widget<wcw::time_widget>(wcw::rect(0, 0, 80, 1));
+    wcw::lineview_widget* lw = con.add_widget<wcw::lineview_widget>(wcw::rect(0, 1, 80, 39));
+    lw->set_current_back_color(wcw::color::GRAY);
+    lw->set_current_text_color(wcw::color::WHITE);
+    lw->set_line(0, "HELLO");
+    lw->set_line(1, " MY");
+    lw->set_line(2, "  FREN");
     while(true)
     {
         using namespace std::chrono_literals;
-        std::this_thread::sleep_for(100ms);
-        cont.update();
-        cont.draw();
+        std::this_thread::sleep_for(50ms);
+        con.update();
+        con.draw();
     }
     int i = 0;
     std::cin >> i;

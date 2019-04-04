@@ -29,6 +29,12 @@ namespace wcw
     public:
         void initialize(rect win_rect, const std::wstring& fontName = L"FixedSys");
 
+        template<typename T>
+        T* add_widget(rect bounds)
+        {
+            return _root_widget->add_child<T>(this, bounds);
+        }
+
         void set_text_color(color);
         void set_background_color(color);
 

@@ -10,12 +10,6 @@ namespace wcw
         _parent = parent;
     }
 
-    void widget::add_child(std::unique_ptr<widget>&& w)
-    {
-        _children.push_back(std::move(w));
-        _children.back()->_parent = this;
-    }
-
     void widget::update_children()
     {
         for(auto& child : _children)
@@ -66,6 +60,28 @@ namespace wcw
     {
         return _parent == nullptr;
     }
+
+    void widget::fill_area(rect area, char ch)
+    {
+        std::string text_line(area.w, ch);
+        for(int y = 0; y < area.h; ++y)
+        {
+            int ypos = area.y + y;
+            for(int x = 0; x < area.w; ++x)
+            {
+                int xpos = area.x + x;
+                write_at(text_line, xpos, ypos);
+            }
+        }
+    }
+
+    void widget::fill_background()
+    {
+        for(int i = 0; i < _transform.h; ++i)
+        {
+            write_at(std::string(_transform.w, ' '), 0, i);
+        }
+    }
     
     void widget::write_at(const std::string& text, int x, int y)
     {
@@ -85,6 +101,16 @@ namespace wcw
             size_t index = x + i;
             row[index] = console_char(text[i], _current_fcol, _current_bcol);
         }
+    }
+
+    void widget::write_at(console_char ch, int x, int y)
+    {
+        if(_char_rows.count(y) != 0)
+        {
+            _char_rows.emplace(y, std::vector<console_char>());
+        }
+        std::vector<console_char>& row = _char_rows[y];
+        row[x] = ch;
     }
 
     void widget::inherit_background()

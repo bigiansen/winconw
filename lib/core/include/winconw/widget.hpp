@@ -28,7 +28,12 @@ namespace wcw
         widget() = delete;
         widget(console* con_ptr, rect bounds_rect, widget* parent = nullptr);
 
-        void add_child(std::unique_ptr<widget>&& w);
+        template<typename T>
+        T* add_child(console* con_ptr, rect bounds)
+        {
+            _children.push_back(std::make_unique<T>(con_ptr, bounds, this));
+            return dynamic_cast<T*>(_children.back().get());
+        }
 
         rect bounding_rect() const noexcept;
 
@@ -46,9 +51,13 @@ namespace wcw
         void inherit_foreground();
         void inherit_colors();
 
+        void fill_area(rect area, char ch);
+        void fill_background();
+
         virtual void get_absolute_position(int& xres, int& yres);
 
         virtual void write_at(const std::string& text, int x, int y);
+        virtual void write_at(console_char ch, int x, int y);
         void clear_row(int row_index);
 
         virtual void draw();

@@ -6,4 +6,9 @@ namespace wcw
     {
         update_children();
     }
+
+    void container_widget::draw()
+    {
+        draw_children();
+    }
 }

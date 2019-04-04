@@ -6,6 +6,8 @@ namespace wcw
 {
     void time_widget::update()
     {
+        fill_background();
+
         using clock = std::chrono::system_clock;
         auto now = clock::now();
         auto time = clock::to_time_t(now);
