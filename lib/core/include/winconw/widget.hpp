@@ -29,7 +29,8 @@ namespace wcw
 
         bool _autosize = false;
         autosize_info _autosize_info;
-
+        bool _needs_autosize = true;
+        
     public:
         widget() = delete;
         widget(console* con_ptr, rect bounds_rect, widget* parent = nullptr);

@@ -235,8 +235,9 @@ namespace wcw
 
     void widget::autosize()
     {
-        if(_autosize && _console->size_changed())
+        if(_autosize && _needs_autosize)
         {
+            _needs_autosize = false;
             rect parent_tform = is_root() ? _console->get_size() : _parent->_transform ;
             rect result_tform = _transform;
             if(_autosize_info.left)
