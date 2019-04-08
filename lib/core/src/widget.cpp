@@ -109,7 +109,7 @@ namespace wcw
 
         if(row.size() < (x + text.size()))
         {
-            row.resize(x + text.size());
+            row.resize(x + text.size(), wcw::console_char(' ', _current_fcol, _current_bcol));
         }
 
         for(size_t i = 0; i < text.size(); ++i)

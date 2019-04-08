@@ -12,7 +12,7 @@ namespace wcw
     void lineview_widget::add_line(std::string&& text)
     {
         _content_changed = true;
-        int largest_index = (*_lines.rbegin()).first;
+        int largest_index = _lines.size() > 0 ? (*_lines.rbegin()).first : 0;
         _lines.emplace(largest_index + 1, std::move(text));
     }
 
