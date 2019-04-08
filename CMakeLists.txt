@@ -32,5 +32,4 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     add_definitions(/W4 /MP)
 endif()
 
-add_subdirectory(bin)
 add_subdirectory(lib)
