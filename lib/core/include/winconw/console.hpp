@@ -25,6 +25,8 @@ namespace wcw
         color _back_color;
         CONSOLE_SCREEN_BUFFER_INFO _con_info;
         std::unique_ptr<container_widget> _root_widget;
+        bool _size_changed = false;
+        bool _first_update = true;
 
     public:
         void initialize(rect win_rect, const std::wstring& fontName = L"FixedSys");
@@ -39,6 +41,7 @@ namespace wcw
         void set_background_color(color);
 
         rect get_size();
+        bool size_changed() const;
 
         void set_cursor_pos(int x, int y);
 

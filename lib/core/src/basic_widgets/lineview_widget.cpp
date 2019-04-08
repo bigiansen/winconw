@@ -4,18 +4,21 @@ namespace wcw
 {
     void lineview_widget::add_line(const std::string& text)
     {
+        _content_changed = true;
         int largest_index = (*_lines.rbegin()).first;
         _lines.emplace(largest_index + 1, text);
     }
 
     void lineview_widget::add_line(std::string&& text)
     {
+        _content_changed = true;
         int largest_index = (*_lines.rbegin()).first;
         _lines.emplace(largest_index + 1, std::move(text));
     }
 
     void lineview_widget::set_line(int index, const std::string& text)
     {
+        _content_changed = true;
         if(_lines.count(index) > 0)
         {
             _lines[index] = text;
@@ -28,6 +31,7 @@ namespace wcw
 
     void lineview_widget::set_line(int index, std::string&& text)
     {
+        _content_changed = true;
         if(_lines.count(index) > 0)
         {
             _lines[index] = std::move(text);
@@ -40,6 +44,7 @@ namespace wcw
 
     void lineview_widget::clear_lines()
     {
+        _content_changed = true;
         _lines.clear();
         fill_background();
     }
@@ -51,12 +56,14 @@ namespace wcw
 
     void lineview_widget::set_offset(int offset)
     {
+        _content_changed = true;
         _vertical_offset = offset;
     }
 
     void lineview_widget::update()
     {
         autosize();
+        clear_rows();
         for(int i = 0; i < _transform.h; ++i)
         {
             if(_lines.count(_vertical_offset + i) == 0)

@@ -25,40 +25,47 @@ namespace wcw
 
     void widget::set_position(int x, int y) noexcept
     {
+        _content_changed = true;
         _transform.x = x;
         _transform.y = y;
     }
 
     void widget::set_size(int w, int h) noexcept
     {
+        _content_changed = true;
         _transform.w = w;
         _transform.h = h;
     }
 
     void widget::set_bounds(rect bounds_rect) noexcept
     {
+        _content_changed = true;
         _transform = bounds_rect;
     }
 
     void widget::enable_autosize(autosize_info info)
     {
+        _content_changed = true;
         _autosize = true;
         _autosize_info = info;
     }
 
     void widget::set_current_color(color fcol, color bcol)
     {
+        _content_changed = true;
         _current_fcol = fcol;
         _current_bcol = bcol;
     }
     
     void widget::set_current_text_color(color fcol)
     {
+        _content_changed = true;
         _current_fcol = fcol;
     }
 
     void widget::set_current_back_color(color bcol)
     {
+        _content_changed = true;
         _current_bcol = bcol;
     }
 
@@ -69,6 +76,7 @@ namespace wcw
 
     void widget::fill_area(rect area, char ch)
     {
+        _content_changed = true;
         std::string text_line(area.w, ch);
         for(int y = 0; y < area.h; ++y)
         {
@@ -83,6 +91,7 @@ namespace wcw
 
     void widget::fill_background()
     {
+        _content_changed = true;
         for(int i = 0; i < _transform.h; ++i)
         {
             write_at(std::string(_transform.w, ' '), 0, i);
@@ -91,6 +100,7 @@ namespace wcw
     
     void widget::write_at(const std::string& text, int x, int y)
     {
+        _content_changed = true;
         if(_char_rows.count(y) != 0)
         {
             _char_rows.emplace(y, std::vector<console_char>());
@@ -111,6 +121,7 @@ namespace wcw
 
     void widget::write_at(console_char ch, int x, int y)
     {
+        _content_changed = true;
         if(_char_rows.count(y) != 0)
         {
             _char_rows.emplace(y, std::vector<console_char>());
@@ -121,6 +132,7 @@ namespace wcw
 
     void widget::inherit_background()
     {
+        _content_changed = true;
         if(!is_root())
         {
             _current_bcol = _parent->_current_bcol;
@@ -129,6 +141,7 @@ namespace wcw
 
     void widget::inherit_foreground()
     {
+        _content_changed = true;
         if(!is_root())
         {
             _current_fcol = _parent->_current_fcol;
@@ -137,6 +150,7 @@ namespace wcw
 
     void widget::inherit_colors()
     {
+        _content_changed = true;
         if(!is_root())
         {
             _current_fcol = _parent->_current_fcol;
@@ -146,10 +160,17 @@ namespace wcw
 
     void widget::clear_row(int row_index)
     {
+        _content_changed = true;
         if(_char_rows.count(row_index) != 0)
         {
             _char_rows[row_index].clear();
         }
+    }
+
+    void widget::clear_rows()
+    {
+        _content_changed = true;
+        _char_rows.clear();
     }
 
     void widget::get_absolute_position(int& xres, int& yres)
@@ -187,35 +208,36 @@ namespace wcw
 
     void widget::draw()
     {
-        int abs_offset_x, abs_offset_y;
-        get_absolute_position(abs_offset_x, abs_offset_y);
-
-        for(size_t i = 0; i < static_cast<size_t>(_transform.h); ++i)
+        if(_content_changed)
         {
-            _console->set_cursor_pos(abs_offset_x, abs_offset_y + i);
-            std::vector<console_char>& row = _char_rows[i];
-            if(row.size() > static_cast<size_t>(_transform.w))
+            int abs_offset_x, abs_offset_y;
+            get_absolute_position(abs_offset_x, abs_offset_y);
+
+            for(size_t i = 0; i < static_cast<size_t>(_transform.h); ++i)
             {
-                std::vector<console_char> aux_clamped;
-                std::copy(row.begin(), row.begin() + _transform.w, std::back_inserter(aux_clamped));
-                _console->output(aux_clamped);
-            }
-            else
-            {
-                _console->output(row);
+                _console->set_cursor_pos(abs_offset_x, abs_offset_y + i);
+                std::vector<console_char>& row = _char_rows[i];
+                if(row.size() > static_cast<size_t>(_transform.w))
+                {
+                    std::vector<console_char> aux_clamped;
+                    std::copy(row.begin(), row.begin() + _transform.w, std::back_inserter(aux_clamped));
+                    _console->output(aux_clamped);
+                }
+                else
+                {
+                    _console->output(row);
+                }
             }
         }
         draw_children();
+        _content_changed = false;
     }
 
     void widget::autosize()
     {
-        if(_autosize)
+        if(_autosize && _console->size_changed())
         {
-            _transform.w = 0;
-            _transform.h = 0;
-
-            rect parent_tform = is_root() ? _parent->_transform : _console->get_size();
+            rect parent_tform = is_root() ? _console->get_size() : _parent->_transform ;
             rect result_tform = _transform;
             if(_autosize_info.left)
             {
@@ -226,7 +248,7 @@ namespace wcw
             if(_autosize_info.right)
             {
                 if(!_autosize_info.left) { result_tform.w = 0; }
-                result_tform.w += (((parent_tform.w - _autosize_info.pad_right) - _transform.x) - _autosize_info.pad_right);
+                result_tform.w += (((parent_tform.w) - _transform.x) - _autosize_info.pad_right);
             }
             if(_autosize_info.top)
             {
@@ -237,7 +259,7 @@ namespace wcw
             if(_autosize_info.bottom)
             {
                 if(!_autosize_info.top) { result_tform.h = 0; }
-                result_tform.h += (((parent_tform.h - _autosize_info.pad_bottom) - _transform.y) - _autosize_info.pad_bottom);
+                result_tform.h += (((parent_tform.h) - _transform.y) - _autosize_info.pad_bottom);
             }
             
             _transform = result_tform;

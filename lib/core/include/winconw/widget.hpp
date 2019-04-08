@@ -25,6 +25,8 @@ namespace wcw
 
         std::map<int, std::vector<console_char>> _char_rows;
 
+        bool _content_changed = true;
+
         bool _autosize = false;
         autosize_info _autosize_info;
 
@@ -65,6 +67,7 @@ namespace wcw
         virtual void write_at(const std::string& text, int x, int y);
         virtual void write_at(console_char ch, int x, int y);
         void clear_row(int row_index);
+        void clear_rows();
 
         virtual void draw();
         virtual void update() = 0;

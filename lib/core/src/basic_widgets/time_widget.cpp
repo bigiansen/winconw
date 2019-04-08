@@ -6,6 +6,8 @@ namespace wcw
 {
     void time_widget::update()
     {
+        _content_changed = true;
+        autosize();
         fill_background();
 
         using clock = std::chrono::system_clock;

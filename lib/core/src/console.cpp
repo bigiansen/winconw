@@ -11,6 +11,7 @@ namespace wcw
         hide_cursor();
         disable_window_controls();
         _root_widget = std::make_unique<container_widget>(this, win_rect, nullptr);
+        _root_widget->enable_autosize(wcw::autosize_info(true, true, true, true));
     }
 
     rect console::get_size()
@@ -154,8 +155,32 @@ namespace wcw
         return _root_widget.get();
     }
 
+    bool console::size_changed() const
+    {
+        return _size_changed;
+    }
+
     void console::update()
     {
+        CONSOLE_SCREEN_BUFFER_INFO prev_info = _con_info;
+        GetConsoleScreenBufferInfo(_con_handle, &_con_info);
+        if(_first_update)
+        {
+            _size_changed = true;
+            _first_update = false;
+        }
+        else
+        {
+            _size_changed = 
+                _con_info.dwSize.X != prev_info.dwSize.X || 
+                _con_info.dwSize.Y != prev_info.dwSize.Y;
+        }
+
+        if(_size_changed)
+        {
+            set_console_size(wcw::rect(0, 0, _con_info.dwSize.X, _con_info.dwSize.Y));
+        }
+
         _root_widget->update();
     }
 
