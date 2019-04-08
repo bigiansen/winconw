@@ -40,6 +40,12 @@ namespace wcw
         _transform = bounds_rect;
     }
 
+    void widget::enable_autosize(autosize_info info)
+    {
+        _autosize = true;
+        _autosize_info = info;
+    }
+
     void widget::set_current_color(color fcol, color bcol)
     {
         _current_fcol = fcol;
@@ -200,5 +206,41 @@ namespace wcw
             }
         }
         draw_children();
+    }
+
+    void widget::autosize()
+    {
+        if(_autosize)
+        {
+            _transform.w = 0;
+            _transform.h = 0;
+
+            rect parent_tform = is_root() ? _parent->_transform : _console->get_size();
+            rect result_tform = _transform;
+            if(_autosize_info.left)
+            {
+                result_tform.w = 0;
+                result_tform.x -= (_transform.x - _autosize_info.pad_left);
+                result_tform.w += _transform.x;
+            }
+            if(_autosize_info.right)
+            {
+                if(!_autosize_info.left) { result_tform.w = 0; }
+                result_tform.w += (((parent_tform.w - _autosize_info.pad_right) - _transform.x) - _autosize_info.pad_right);
+            }
+            if(_autosize_info.top)
+            {
+                result_tform.h = 0;
+                result_tform.y -= (_transform.y - _autosize_info.pad_top);
+                result_tform.h += _transform.y;
+            }
+            if(_autosize_info.bottom)
+            {
+                if(!_autosize_info.top) { result_tform.h = 0; }
+                result_tform.h += (((parent_tform.h - _autosize_info.pad_bottom) - _transform.y) - _autosize_info.pad_bottom);
+            }
+            
+            _transform = result_tform;
+        }
     }
 }

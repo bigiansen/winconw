@@ -2,6 +2,7 @@
 
 #include <winconw/rect.hpp>
 #include <winconw/console_char.hpp>
+#include <winconw/autosize_info.hpp>
 #include <string>
 #include <vector>
 
@@ -24,6 +25,9 @@ namespace wcw
 
         std::map<int, std::vector<console_char>> _char_rows;
 
+        bool _autosize = false;
+        autosize_info _autosize_info;
+
     public:
         widget() = delete;
         widget(console* con_ptr, rect bounds_rect, widget* parent = nullptr);
@@ -40,6 +44,8 @@ namespace wcw
         void set_position(int x, int y) noexcept;
         void set_size(int w, int h) noexcept;
         void set_bounds(rect bounds_rect) noexcept;
+
+        void enable_autosize(autosize_info info);
 
         void set_current_color(color fcol, color bcol);
         void set_current_text_color(color fcol);
@@ -64,6 +70,7 @@ namespace wcw
         virtual void update() = 0;
 
     protected:
+        virtual void autosize();
         virtual void update_children();
         virtual void draw_children();
     };

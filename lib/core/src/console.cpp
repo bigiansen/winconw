@@ -13,6 +13,12 @@ namespace wcw
         _root_widget = std::make_unique<container_widget>(this, win_rect, nullptr);
     }
 
+    rect console::get_size()
+    {
+        GetConsoleScreenBufferInfo(_con_handle, &_con_info);
+        return rect(0, 0, _con_info.dwSize.X, _con_info.dwSize.Y);
+    }
+
     void console::disable_window_controls()
     {
         HWND con_window = GetConsoleWindow();

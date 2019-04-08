@@ -55,7 +55,8 @@ namespace wcw
     }
 
     void lineview_widget::update()
-    {        
+    {
+        autosize();
         for(int i = 0; i < _transform.h; ++i)
         {
             if(_lines.count(_vertical_offset + i) == 0)
@@ -75,7 +76,7 @@ namespace wcw
                     std::string aux = lstr + std::string(_transform.w - lstr.size(), ' ');
                     write_at(aux, 0, i);
                 }
-            }            
+            }
         }
         update_children();
     }

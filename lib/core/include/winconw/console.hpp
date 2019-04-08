@@ -38,6 +38,8 @@ namespace wcw
         void set_text_color(color);
         void set_background_color(color);
 
+        rect get_size();
+
         void set_cursor_pos(int x, int y);
 
         void write(const std::string& text);

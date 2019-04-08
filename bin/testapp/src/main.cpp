@@ -11,14 +11,16 @@
 int main()
 {
     wcw::console con;
-    con.initialize(wcw::rect(0, 0, 80, 40));    
-    wcw::lineview_widget* lw = con.add_widget<wcw::lineview_widget>(wcw::rect(0, 0, 80, 40));
-    wcw::time_widget* tw = con.add_widget<wcw::time_widget>(wcw::rect(0, 20, 40, 2));
+    con.initialize(wcw::rect(0, 0, 80, 40));
+    wcw::lineview_widget* lw = con.add_widget<wcw::lineview_widget>(wcw::rect(10, 5, 0, 0));
     lw->set_current_back_color(wcw::color::GRAY);
-    lw->set_current_text_color(wcw::color::WHITE);
+    auto asz = wcw::autosize_info(false, true, false, true);
+    asz.pad_right = 3;
+    lw->enable_autosize(asz);
     lw->set_line(0, "HELLO");
     lw->set_line(1, " MY");
     lw->set_line(2, "  FREN");
+
     while(true)
     {
         using namespace std::chrono_literals;
